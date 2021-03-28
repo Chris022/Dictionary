@@ -6,43 +6,43 @@ from dataTypes import *
 from dataBase import *
 
 import json as jsonF
-app = Bottle()
+application = Bottle()
 
 dateDone = date(year=2021, month=7, day=7)
 
 
-@app.get('/')
+@application.get('/')
 def server_static():
     return static_file("index.html", root='./public/day-list/build')
 
-@app.get('/<filepath>')
+@application.get('/<filepath>')
 def server_static(filepath):
     return static_file(filepath, root='./public/day-list/build')
 
-@app.get('/static/js/<filepath>')
+@application.get('/static/js/<filepath>')
 def server_static(filepath):
     return static_file(filepath, root='./public/day-list/build/static/js')
 
-@app.get('/days/<datein>')
+@application.get('/days/<datein>')
 def getDay(datein):
     l = datein.split("-")
     return jsonF.dumps(getEntry(date(year=int(l[0]), month=int(l[1]), day=int(l[2]))))
 
-@app.get('/today')
+@application.get('/today')
 def getToday():
     today = date.today()
     return jsonF.dumps(getEntry(today))
 
-@app.get('/daysLeft')
+@application.get('/daysLeft')
 def getDaysLeft():
     today = date.today()
     return jsonF.dumps({"daysleft":f"{(dateDone-today).days}"})
 
-@app.post('/days')
+@application.post('/days')
 def post():
     data = {"id":request.json.get('id'),"date":str(request.json.get('date')),"dataChris":request.json.get('dataChris'),"dataKay":request.json.get('dataKay')}
     updateOrCreateEntry(data)
 
 
-run(app, host='localhost', port=8080)
+run(application, host='localhost', port=8080)
 
